@@ -5,23 +5,18 @@
  * @format
  */
 
-import { StatusBar, StyleSheet, useColorScheme, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
-  SafeAreaProvider
+  SafeAreaProvider, SafeAreaView
 } from 'react-native-safe-area-context';
-import { getFontFamily } from './utils/helper'; // Ensure the file exists at this path
+import Title  from './components/Title/Title'; 
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
+const App = () => {
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <View style={styles.container}>
-        <Text style={{fontSize: 50, fontFamily: getFontFamily('Inter', '100')}}>
-          Hello World!
-        </Text>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <Title title={'Let\'s explore'} />
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 }
