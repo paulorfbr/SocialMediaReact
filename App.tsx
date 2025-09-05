@@ -5,12 +5,11 @@
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import { StatusBar, StyleSheet, useColorScheme, View, Text } from 'react-native';
 import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
+  SafeAreaProvider
 } from 'react-native-safe-area-context';
+import { getFontFamily } from './utils/helper'; // Ensure the file exists at this path
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -18,21 +17,12 @@ function App() {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+      <View style={styles.container}>
+        <Text style={{fontSize: 50, fontFamily: getFontFamily('Inter', '100')}}>
+          Hello World!
+        </Text>
+      </View>
     </SafeAreaProvider>
-  );
-}
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
   );
 }
 
