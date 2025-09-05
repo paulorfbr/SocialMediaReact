@@ -70,13 +70,9 @@ const App = () => {
     <SafeAreaProvider>
       <SafeAreaView style={globalStyle.container}>
         <Title title={'Let\'s explore'} />
-        <TouchableOpacity style={globalStyle.messageIcon}>
-          <View style={globalStyle.messageNumberContainer}>
-            <Text style={globalStyle.messageNumber}>2</Text>
-          </View>
-        </TouchableOpacity>
         <View>
-          <FlatList 
+          <FlatList
+            showsHorizontalScrollIndicator={false} 
             horizontal={true}
             data={userStories} 
             renderItem={({item}) => <UserStory firstName={item.firstName} profileImage={item.profileImage}/>} />

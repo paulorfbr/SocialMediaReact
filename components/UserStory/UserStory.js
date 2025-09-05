@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 const UserStory = (props) => {
     return (
         <View style={style.storyContainer}>
-            <Image source={props.profileImage}/>
-            <Text>{props.firstName}</Text>
+            <Image style={style.image} source={props.profileImage}/>
+            <Text style={style.firstName}>{props.firstName}</Text>
         </View>
     );
 }
