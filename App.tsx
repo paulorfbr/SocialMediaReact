@@ -16,6 +16,7 @@ import Title from './components/Title/Title';
 import UserStory from './components/UserStory/UserStory';
 import UserPost from './components/UserPost/UserPost';
 import { getFontFamily } from './utils/helper';
+import {horizontalScale, scaleFontSize, verticalScale} from './assets/styles/scaling';
 
 const App = () => {
   const userStoriesPageSize = 4;
@@ -243,23 +244,23 @@ const globalStyle = StyleSheet.create({
     flex: 1,
   },
   userStoryContainer: {
-    marginTop: 20,
-    marginHorizontal: 28,
+    marginTop: verticalScale(20),
+    marginHorizontal: horizontalScale(28),
   },
   userPostContainer: {
-    marginHorizontal: 24,
+    marginHorizontal: horizontalScale(24),
   },
   header: {
-    marginLeft: 27,
-    marginRight: 17,
-    marginTop: 30,
+    marginLeft: horizontalScale(27),
+    marginRight: horizontalScale(17),
+    marginTop: verticalScale(30),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   messageIcon: {
-    padding: 14,
-    borderRadius: 100,
+    padding: horizontalScale(14),
+    borderRadius: horizontalScale(100),
     backgroundColor: '#F9FAFB',
   },
   messageNumberContainer: {
@@ -267,16 +268,16 @@ const globalStyle = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    width: 10,
-    height: 10,
-    borderRadius: 10,
+    width: horizontalScale(10),
+    height: horizontalScale(10),
+    borderRadius: horizontalScale(10),
     position: 'absolute',
-    right: 10,
-    top: 12,
+    right: horizontalScale(10),
+    top: verticalScale(10),
   },
   messageNumber: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: scaleFontSize(6),
     fontFamily: getFontFamily('Inter', '600'),
   },
 });
