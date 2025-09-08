@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import Title from './components/Title/Title';
 import UserStory from './components/UserStory/UserStory';
+import UserPost from './components/UserPost/UserPost';
 import { getFontFamily } from './utils/helper';
 
 const App = () => {
@@ -23,8 +24,15 @@ const App = () => {
     { firstName: string; id: number; profileImage: any }[]
   >([]);
   const [isLoadingUserStories, setIsLoadingUserStories] = useState(false);
+  const userPostsPageSize = 2;
+  const [userPostsCurrentPage, setUserPostsCurrentPage] = useState(1);
+  const [userPostsRenderedData, setUserPostsRenderedData] = useState<
+    { firstName: string; lastName: string; location: string; likes: number; comments: number; bookmarks: number; image: any; profileImage: any; id: number }[]
+  >([]);
+  const [isLoadingUserPosts, setIsLoadingUserPosts] = useState(false);
 
-  const pagination = (database: { firstName: string; id: number; profileImage: any }[], currentPage: number, pageSize: number) => {
+
+  const pagination = (database, currentPage, pageSize) => {
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     if (startIndex >= database.length) {
@@ -81,6 +89,64 @@ const App = () => {
     },
   ];
 
+  const userPosts = [
+    {
+      firstName: 'Allison',
+      lastName: 'Becker',
+      location: 'Boston, MA',
+      likes: 1201,
+      comments: 24,
+      bookmarks: 55,
+      image: require('./assets/images/default_post.png'),
+      profileImage: require('./assets/images/default_profile.png'),
+      id: 1,
+    },
+    {
+      firstName: 'Jennifer',
+      lastName: 'Wilkson',
+      location: 'Worcester, MA',
+      likes: 1301,
+      comments: 25,
+      bookmarks: 70,
+      image: require('./assets/images/default_post.png'),
+      profileImage: require('./assets/images/default_profile.png'),
+      id: 2,
+    },
+    {
+      firstName: 'Adam',
+      lastName: 'Spera',
+      location: 'Worcester, MA',
+      likes: 100,
+      comments: 8,
+      bookmarks: 3,
+      image: require('./assets/images/default_post.png'),
+      profileImage: require('./assets/images/default_profile.png'),
+      id: 3,
+    },
+    {
+      firstName: 'Nata',
+      lastName: 'Vacheishvili',
+      location: 'New York, NY',
+      likes: 200,
+      comments: 16,
+      bookmarks: 6,
+      image: require('./assets/images/default_post.png'),
+      profileImage: require('./assets/images/default_profile.png'),
+      id: 4,
+    },
+    {
+      firstName: 'Nicolas',
+      lastName: 'Namoradze',
+      location: 'Berlin, Germany',
+      likes: 2000,
+      comments: 32,
+      bookmarks: 12,
+      image: require('./assets/images/default_post.png'),
+      profileImage: require('./assets/images/default_profile.png'),
+      id: 5,
+    },
+  ];
+  
   useEffect(() => {
     console.log('Fetching user stories data...');
     setIsLoadingUserStories(true);
@@ -88,11 +154,15 @@ const App = () => {
     console.log('Initial user stories data: ', getInitialData);
     setUserStoriesRenderedData(getInitialData);
     setIsLoadingUserStories(false);
+
+    setIsLoadingUserPosts(true);
+    const getInitialDataPosts = pagination(userPosts, 1, userPostsPageSize);
+    setUserPostsRenderedData(getInitialDataPosts);
+    setIsLoadingUserPosts(false);
   }, []);
 
   
-  
-  
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={globalStyle.container}>
@@ -125,6 +195,44 @@ const App = () => {
                   firstName={item.firstName} profileImage={item.profileImage}
                   />} />
         </View>
+        <View style={globalStyle.userPostContainer}>
+          <FlatList 
+           onEndReachedThreshold={0.5}
+           onEndReached={() => {
+            if (isLoadingUserPosts) {
+              return;
+            }
+            setIsLoadingUserPosts(true);
+            console.log(
+              'fetching more data for you ',
+              userPostsCurrentPage + 1,
+            );
+            const contentToAppend = pagination(
+              userPosts,
+              userPostsCurrentPage + 1,
+              userPostsPageSize,
+            );
+            if (contentToAppend.length > 0) {
+              setUserPostsCurrentPage(userPostsCurrentPage + 1);
+              setUserPostsRenderedData(prev => [...prev, ...contentToAppend]);
+            }
+            setIsLoadingUserPosts(false);
+          }}
+          data={userPostsRenderedData}
+          renderItem={({item}) => 
+              <UserPost
+                key={'userPost' + item.id} 
+                firstName={item.firstName}
+                lastName={item.lastName}
+                image={item.image}
+                likes={item.likes}
+                comments={item.comments}
+                bookmarks={item.bookmarks}
+                profileImage={item.profileImage}
+                location={item.location}
+              />
+          } />
+          </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -137,6 +245,9 @@ const globalStyle = StyleSheet.create({
   userStoryContainer: {
     marginTop: 20,
     marginHorizontal: 28,
+  },
+  userPostContainer: {
+    marginHorizontal: 24,
   },
   header: {
     marginLeft: 27,
