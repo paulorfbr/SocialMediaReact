@@ -5,13 +5,11 @@
  * @format
  */
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {
   StyleSheet,
-  TouchableOpacity,
   View,
-  Text,
   FlatList,
 } from 'react-native';
 import Title from './components/Title/Title';
@@ -19,6 +17,22 @@ import UserStory from './components/UserStory/UserStory';
 import { getFontFamily } from './utils/helper';
 
 const App = () => {
+  const userStoriesPageSize = 4;
+  const [userStoriesCurrentPage, setUserStoriesCurrentPage] = useState(1);
+  const [userStoriesRenderedData, setUserStoriesRenderedData] = useState<
+    { firstName: string; id: number; profileImage: any }[]
+  >([]);
+  const [isLoadingUserStories, setIsLoadingUserStories] = useState(false);
+
+  const pagination = (database: { firstName: string; id: number; profileImage: any }[], currentPage: number, pageSize: number) => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    if (startIndex >= database.length) {
+      return [];
+    }
+    return database.slice(startIndex, endIndex);
+  };
+
   const userStories = [
     {
       firstName: 'Joseph',
@@ -66,16 +80,50 @@ const App = () => {
       profileImage: require('./assets/images/default_profile.png'),
     },
   ];
+
+  useEffect(() => {
+    console.log('Fetching user stories data...');
+    setIsLoadingUserStories(true);
+    const getInitialData = pagination(userStories, 1, userStoriesPageSize);
+    console.log('Initial user stories data: ', getInitialData);
+    setUserStoriesRenderedData(getInitialData);
+    setIsLoadingUserStories(false);
+  }, []);
+
+  
+  
+  
   return (
     <SafeAreaProvider>
       <SafeAreaView style={globalStyle.container}>
         <Title title={'Let\'s explore'} />
         <View>
           <FlatList
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            if (isLoadingUserStories) {
+              return;
+            }
+            setIsLoadingUserStories(true);
+            const contentToAppend = pagination(
+              userStories,
+              userStoriesCurrentPage + 1,
+              userStoriesPageSize,
+            );
+            if (contentToAppend.length > 0) {
+              setUserStoriesCurrentPage(userStoriesCurrentPage + 1);
+              console.log('Fetching new user stories data: ', contentToAppend);
+              setUserStoriesRenderedData(prev => [...prev, ...contentToAppend]);
+            }
+            setIsLoadingUserStories(false);
+          }}
             showsHorizontalScrollIndicator={false} 
             horizontal={true}
-            data={userStories} 
-            renderItem={({item}) => <UserStory firstName={item.firstName} profileImage={item.profileImage}/>} />
+            data={userStoriesRenderedData}
+            renderItem={({item}) => <UserStory 
+                  key={'userStory' + item.id}
+                  firstName={item.firstName} profileImage={item.profileImage}
+                  />} />
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -87,9 +135,9 @@ const globalStyle = StyleSheet.create({
     flex: 1,
   },
   userStoryContainer: {
-    flex: 1,
-    flexDirection: 'row'
-  }, 
+    marginTop: 20,
+    marginHorizontal: 28,
+  },
   header: {
     marginLeft: 27,
     marginRight: 17,
