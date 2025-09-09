@@ -11,6 +11,8 @@ import {
   StyleSheet,
   View,
   FlatList,
+  Switch,
+  Platform
 } from 'react-native';
 import Title from './components/Title/Title';
 import UserStory from './components/UserStory/UserStory';
@@ -31,6 +33,9 @@ const App = () => {
     { firstName: string; lastName: string; location: string; likes: number; comments: number; bookmarks: number; image: any; profileImage: any; id: number }[]
   >([]);
   const [isLoadingUserPosts, setIsLoadingUserPosts] = useState(false);
+
+  const [isOn, setIsOn] = useState(false);
+  console.log(Platform);
 
 
   const pagination = (database, currentPage, pageSize) => {
